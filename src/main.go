@@ -1,6 +1,12 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"bufio"
+	"os"
+	"os/exec"
+	"strings"
+)
 
 type Patient struct {
 	name string
@@ -13,6 +19,11 @@ type Patient struct {
 
 var head, tail *Patient
 
+func cls() {
+	cmd := exec.Command("clear")
+	cmd.Stdout = os.Stdout
+	cmd.Run()
+}
 
 func createPatient(name string, age int, symptoms string, severity string, code int) *Patient {
 	return &Patient{
@@ -53,15 +64,15 @@ func createNewPatient(name string, age int, symptoms string, severity string, co
 }
 
 func insert() {
-	var name string
-	var age int
-	var symptoms string
-	var severity string
-	var code int
+	reader := bufio.NewReader(os.Stdin)
+	
+	var name, symptoms, severity string
+	var age, code int
 
 	for {
 		fmt.Print("Input patient name[4-25]: ")
-		fmt.Scan(&name)
+		name, _ = reader.ReadString('\n')
+		name = strings.TrimSpace(name)
 
 		if (len(name) >= 4 && len(name) <= 25) {
 			break
@@ -71,6 +82,7 @@ func insert() {
 	for {
 		fmt.Print("Input patient age[> 0]: ")
 		fmt.Scan(&age)
+		fmt.Scanln()
 
 		if (age > 0) {
 			break
@@ -79,7 +91,8 @@ func insert() {
 
 	for {
 		fmt.Print("Input patient symptoms[>= 6]: ")
-		fmt.Scan(&symptoms)
+		symptoms, _ = reader.ReadString('\n')
+		symptoms = strings.TrimSpace(symptoms)
 
 		if (len(symptoms) >= 6) {
 			break
@@ -95,12 +108,10 @@ func insert() {
 		}
 	}
 
-	if severity == "Severe" {
+	if severity == "Severe" || severity == "Mild" {
 		code = len(severity) - 3
-	} else if severity == "Moderate" {
-		code = len(severity) - 6
 	} else {
-		code = len(severity) - 3
+		code = len(severity) - 6
 	}
 
 	createNewPatient(name, age, symptoms, severity, code)
@@ -115,22 +126,31 @@ func view() {
 		menu()
 	}
 
+	fmt.Println("Patient List:")
+	fmt.Println("------------------------------------------------------------------------------------------------------")
+	fmt.Printf("|%-3s| %-20s| %-4s| %-55s| %-10s|\n", "No", "Name", "Age", "Description", "Code")
+	fmt.Println("------------------------------------------------------------------------------------------------------")
+	
+	var iteration int
 	curr := head
 	for curr != nil {
-		fmt.Println("Name: ", curr.name)
-		fmt.Println("Age: ", curr.age)
-		fmt.Println("Symptoms: ", curr.symptoms)
-		fmt.Println("Severity: ", curr.severity)
-		fmt.Println()
-
+		fmt.Printf("|%-3d| %-20s| %-4d| %-55s| %-10s|\n", iteration, curr.name, curr.age, curr.symptoms, curr.severity)
+		iteration++
 		curr = curr.next
 	}
+
+	fmt.Println("------------------------------------------------------------------------------------------------------")
+	fmt.Println()
+	fmt.Println("Press enter to continue...")
+	fmt.Scanln()
+	menu()
 }
 
 func menu() {
 	var menu int
 
 	for (menu < 1 || menu > 5) {
+		cls()
 		fmt.Println("🏥 Emerginic")
 		fmt.Println("=============")
 		fmt.Println("1. Insert")
@@ -140,19 +160,22 @@ func menu() {
 		fmt.Println("5. Exit")
 		fmt.Print(">> ")
 		fmt.Scan(&menu)
+		fmt.Scanln()
 	}
 
 	switch (menu) {
 		case 1:
+			cls()
 			insert()
 		case 2:
+			cls()
 			view()
 		case 3:
 			// update()
 		case 4:
 			// nextQueue()
 		case 5:
-			// exit()
+			os.Exit(0)
 	}
 }
 
