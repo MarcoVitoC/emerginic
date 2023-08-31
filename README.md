@@ -1,2 +1,2 @@
-### 🏥 Emerginic
+# 🏥 Emerginic
 A simple CLI application about hospital emergency queue systems, implemented with a <a href="https://www.geeksforgeeks.org/data-structures/linked-list/doubly-linked-list/" target="_blank">doubly linked list</a> and <a href="https://www.geeksforgeeks.org/priority-queue-set-1-introduction/" target="_blank">priority queue</a> based on the patient's severity. This project was developed as a deliberate effort to familiarize myself with the fundamental syntax and principles of the Go programming language.
