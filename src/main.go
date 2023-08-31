@@ -52,7 +52,7 @@ func createNewPatient(name string, age int, symptoms string, severity string, co
 	} else { // push mid
 		curr := front
 
-		for newPatient.code <= front.code {
+		for newPatient.code <= curr.code {
 			curr = curr.next
 		}
 
